@@ -1,6 +1,6 @@
-# Autonomous Research Agent (Python Version)
+# Autonomous Research Agent(https://researchagent-jp8bzucvdqyorqqpoubhv9.streamlit.app/)
 
-A high-fidelity autonomous AI agent built with **Streamlit**, **LangGraph**, and **Gemini 1.5 Flash**. This application is designed for quick deployment to GitHub and Streamlit Cloud.
+A high-fidelity autonomous AI agent built with **Streamlit**, **LangGraph**, and **Gemini 1.5 Flash**. 
 
 ## Features
 
@@ -26,6 +26,7 @@ A high-fidelity autonomous AI agent built with **Streamlit**, **LangGraph**, and
    Create a `.env` file or export your key:
    ```bash
    export GEMINI_API_KEY="your_api_key"
+   TAVILY_API_KEY="your_api_key"
    ```
 
 4. **Run the app**:
@@ -33,13 +34,6 @@ A high-fidelity autonomous AI agent built with **Streamlit**, **LangGraph**, and
    streamlit run app.py
    ```
 
-## Deployment to Streamlit Cloud
-
-1. Push this folder to a new GitHub repository.
-2. Go to [share.streamlit.io](https://share.streamlit.io/).
-3. Connect your GitHub account and select this repository.
-4. Add `GEMINI_API_KEY` in the **Secrets** section of the Streamlit Cloud dashboard.
-5. Deploy!
 
 ## Project Structure
 
