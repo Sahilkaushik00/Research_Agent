@@ -78,7 +78,8 @@ class AutonomousResearchAgent:
         
         {context}
         """
-        response = self.model.invoke([SystemMessage(content=prompt)])
+        # Using HumanMessage ensures compatibility with Gemini API which requires at least one content message
+        response = self.model.invoke([HumanMessage(content=prompt)])
         return {"messages": [response]}
 
     def _writer_node(self, state: AgentState):
@@ -88,7 +89,7 @@ class AutonomousResearchAgent:
         prompt = f"""
         You are a Professional Technical Writer.
         Objective: {objective}
-        Findings: {findings}
+        Findings: {findings if findings else "No specific findings were gathered. Provide a general overview."}
         
         Create a well-structured Markdown report with the following sections:
         1. Key Takeaways
@@ -98,7 +99,8 @@ class AutonomousResearchAgent:
         
         Ensure the formatting is clean and professional.
         """
-        response = self.model.invoke([SystemMessage(content=prompt)])
+        # Using HumanMessage ensures compatibility with Gemini API which requires at least one content message
+        response = self.model.invoke([HumanMessage(content=prompt)])
         return {"report": response.content}
 
     def run(self, objective: str) -> str:
