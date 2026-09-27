@@ -1,11 +1,9 @@
+streamlit
+google-generativeai>=0.8.3
+langchain-google-genai>=2.0.0
 langchain>=0.3.0
 langchain-community
+langchain-tavily
 tavily-python
 langgraph
 python-dotenv
-streamlit
-langchain
-langchain-core
-langgraph
-langchain-openai
-langchain-tavily
