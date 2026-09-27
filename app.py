@@ -106,22 +106,60 @@ if user_query:
             st.error(f"Error: {str(e)}")
 
 # Display results
-for msg in reversed(st.session_state.messages):
-    if msg["role"] == "user":
-        st.markdown(f"**👤 You:** {msg['content']}")
-    else:
-        st.markdown('<div class="report-container">', unsafe_allow_html=True)
-        st.markdown(f"### 📋 Research Report")
-        st.markdown(msg["content"])
+# for msg in reversed(st.session_state.messages):
+#     if msg["role"] == "user":
+#         st.markdown(f"**👤 You:** {msg['content']}")
+#     else:
+#         st.markdown('<div class="report-container">', unsafe_allow_html=True)
+#         st.markdown(f"### 📋 Research Report")
+#         st.markdown(msg["content"])
         
-        # Download button
+#         # Download button
+#         st.download_button(
+#             label="📥 Download Markdown Report",
+#             data=msg["content"],
+#             file_name=f"research_report.md",
+#             mime="text/markdown",
+#         )
+#         st.markdown('</div>', unsafe_allow_html=True)
+#     st.markdown("---")
+# ============================================================
+# Display Results
+# ============================================================
+
+for index, msg in enumerate(reversed(st.session_state.messages)):
+
+    if msg["role"] == "user":
+
+        st.markdown(
+            f"**👤 You:** {msg['content']}"
+        )
+
+    else:
+
+        st.markdown(
+            '<div class="report-container">',
+            unsafe_allow_html=True
+        )
+
+        st.markdown("### 📋 Research Report")
+
+        st.markdown(msg["content"])
+
+        # Download report
         st.download_button(
             label="📥 Download Markdown Report",
-            data=msg["content"],
-            file_name=f"research_report.md",
+            data=str(msg["content"]),
+            file_name=f"research_report_{index}.md",
             mime="text/markdown",
+            key=f"download_report_{index}"
         )
-        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown(
+            "</div>",
+            unsafe_allow_html=True
+        )
+
     st.markdown("---")
 
 # Footer
