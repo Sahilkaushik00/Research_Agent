@@ -1,9 +1,15 @@
 import os
 from typing import TypedDict, List, Annotated
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langgraph.graph import StateGraph, END
+
+# Import search tool with safety check
+try:
+    from langchain_community.tools.tavily_search import TavilySearchResults
+    HAS_TAVILY = True
+except ImportError:
+    HAS_TAVILY = False
 
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], lambda x, y: x + y]
@@ -21,10 +27,13 @@ class AutonomousResearchAgent:
             temperature=0.2
         )
         
-        self.search_tool = TavilySearchResults(
-            api_key=self.tavily_api_key,
-            max_results=5
-        )
+        if HAS_TAVILY and self.tavily_api_key:
+            self.search_tool = TavilySearchResults(
+                api_key=self.tavily_api_key,
+                max_results=5
+            )
+        else:
+            self.search_tool = None
         
         self.workflow = self._build_workflow()
 
@@ -42,15 +51,21 @@ class AutonomousResearchAgent:
 
     def _research_node(self, state: AgentState):
         objective = state["objective"]
-        # Use real search tool
-        search_results = self.search_tool.invoke({"query": objective})
+        
+        if self.search_tool:
+            try:
+                search_results = self.search_tool.invoke({"query": objective})
+                context = f"Based on these search results, synthesize the key findings:\n{search_results}"
+            except Exception as e:
+                context = f"Note: Search tool failed ({str(e)}). Synthesize findings based on internal knowledge for: {objective}"
+        else:
+            context = f"Synthesize findings based on internal knowledge for: {objective}"
         
         prompt = f"""
         You are an Autonomous Researcher. 
         Objective: {objective}
         
-        Based on these search results, synthesize the key findings:
-        {search_results}
+        {context}
         """
         response = self.model.invoke([SystemMessage(content=prompt)])
         return {"messages": [response]}

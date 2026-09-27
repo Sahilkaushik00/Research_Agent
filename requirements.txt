@@ -2,5 +2,7 @@ streamlit
 google-generativeai
 langchain-google-genai
 langchain
+langchain-community
+tavily-python
 langgraph
 python-dotenv
