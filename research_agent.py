@@ -6,10 +6,14 @@ from langgraph.graph import StateGraph, END
 
 # Import search tool with safety check
 try:
-    from langchain_community.tools.tavily_search import TavilySearchResults
+    from langchain_tavily import TavilySearch as TavilySearchResults
     HAS_TAVILY = True
 except ImportError:
-    HAS_TAVILY = False
+    try:
+        from langchain_community.tools.tavily_search import TavilySearchResults
+        HAS_TAVILY = True
+    except ImportError:
+        HAS_TAVILY = False
 
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], lambda x, y: x + y]
@@ -28,10 +32,17 @@ class AutonomousResearchAgent:
         )
         
         if HAS_TAVILY and self.tavily_api_key:
-            self.search_tool = TavilySearchResults(
-                api_key=self.tavily_api_key,
-                max_results=5
-            )
+            # Handle both old and new parameter names for the API key
+            try:
+                self.search_tool = TavilySearchResults(
+                    tavily_api_key=self.tavily_api_key,
+                    max_results=5
+                )
+            except TypeError:
+                self.search_tool = TavilySearchResults(
+                    api_key=self.tavily_api_key,
+                    max_results=5
+                )
         else:
             self.search_tool = None
         
