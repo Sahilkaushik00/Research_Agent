@@ -157,4 +157,164 @@ st.title("🧠 Autonomous Research Agent")
 st.subheader("Multi-Source Intelligence Engine")
 
 
+# ============================================================
+# Initialize Agent
+# ============================================================
+
+if "agent" not in st.session_state:
+
+    if openai_key and tavily_key:
+
+        try:
+            st.session_state.agent = AutonomousResearchAgent(
+                api_key=openai_key,
+                tavily_api_key=tavily_key
+            )
+
+        except Exception as e:
+            st.error(f"Failed to initialize agent: {str(e)}")
+            st.stop()
+
+    else:
+
+        st.warning(
+            "Please configure both your OpenAI and Tavily API keys "
+            "before using the research agent."
+        )
+
+        st.info(
+            """
+            ### Streamlit Cloud
+
+            Add these to your app's Secrets:
+
+            ```
+            OPENAI_API_KEY = "your-openai-api-key"
+            TAVILY_API_KEY = "your-tavily-api-key"
+            ```
+
+            Do not commit API keys to GitHub.
+            """
+        )
+
+        st.stop()
+
+
+# ============================================================
+# Initialize Chat History
+# ============================================================
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+
+# ============================================================
+# Research Input
+# ============================================================
+
+user_query = st.text_input(
+    "What would you like me to research today?",
+    placeholder="e.g., Future of quantum computing in 2026"
+)
+
+
+# ============================================================
+# Run Agent
+# ============================================================
+
+if user_query:
+
+    st.session_state.messages.append(
+        {
+            "role": "user",
+            "content": user_query
+        }
+    )
+
+    with st.spinner(
+        "🤖 Agent is thinking and researching..."
+    ):
+
+        try:
+
+            # Run the autonomous research agent
+            report = st.session_state.agent.run(
+                user_query
+            )
+
+            st.session_state.messages.append(
+                {
+                    "role": "agent",
+                    "content": report
+                }
+            )
+
+        except Exception as e:
+
+            st.error(
+                f"Error while running the agent: {str(e)}"
+            )
+
+
+# ============================================================
+# Display Results
+# ============================================================
+
+for msg in reversed(st.session_state.messages):
+
+    if msg["role"] == "user":
+
+        st.markdown(
+            f"**👤 You:** {msg['content']}"
+        )
+
+    else:
+
+        st.markdown(
+            '<div class="report-container">',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            "### 📋 Research Report"
+        )
+
+        st.markdown(
+            msg["content"]
+        )
+
+        # Download report
+        st.download_button(
+            label="📥 Download Markdown Report",
+            data=msg["content"],
+            file_name="research_report.md",
+            mime="text/markdown",
+        )
+
+        st.markdown(
+            "</div>",
+            unsafe_allow_html=True
+        )
+
+    st.markdown("---")
+
+
+# ============================================================
+# Footer
+# ============================================================
+
+st.markdown(
+    """
+    <div style="
+        text-align: center;
+        color: #8b949e;
+        font-size: 0.8rem;
+        margin-top: 50px;
+    ">
+        Powered by OpenAI + LangGraph + Tavily |
+        Autonomous Agent Lab v2.0
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
