@@ -26,7 +26,7 @@ class AutonomousResearchAgent:
         self.tavily_api_key = tavily_api_key or os.getenv("TAVILY_API_KEY")
         
         self.model = ChatGoogleGenerativeAI(
-            model="gemini-3.8-flash",
+            model="gemini-3-flash-preview",
             google_api_key=api_key,
             temperature=0.2
         )
