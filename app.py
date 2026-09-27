@@ -59,8 +59,8 @@ with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2103/2103633.png", width=80)
     st.title("Agent Settings")
     
-    gemini_key = st.text_input("Gemini API Key", type="password", value=os.getenv("GEMINI_API_KEY", ""))
-    tavily_key = st.text_input("Tavily API Key", type="password", value=os.getenv("TAVILY_API_KEY", ""))
+    gemini_key =  value=os.getenv("GEMINI_API_KEY", "")
+    tavily_key =  value=os.getenv("TAVILY_API_KEY", "")
     
     st.markdown("---")
     st.markdown("### About")
